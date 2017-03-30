@@ -104,10 +104,19 @@ STAMP_BUILT:=$(PKG_BUILD_DIR)/.built
 STAMP_INSTALLED:=$(STAGING_DIR)/stamp/.$(PKG_NAME)$(if $(BUILD_VARIANT),.$(BUILD_VARIANT),)_installed
 
 STAGING_FILES_LIST:=$(PKG_NAME)$(if $(BUILD_VARIANT),.$(BUILD_VARIANT),).list
+STAGING_DIR:=$(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$(PKG_DIR_NAME)
+$(eval $(shell sed -n 's|.*$(PKG_DIR_NAME)/compile.*=|deps:=|p' $(TMP_DIR)/.packagedeps))
+deps:=$(shell for i in $(deps); do echo $$i | sed -n 's|/.*/\([^/]*\)/compile|\1|p' | grep -v '^host$$'; done)
 
 define CleanStaging
 	rm -f $(STAMP_INSTALLED)
 	@-(\
+		mkdir -p "$(STAGING_DIR)"; \
+		[ -z "$(deps)" ] || for i in $(deps); do \
+			if [ -d "$(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$$$$i" ] && [ -n "`ls $(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$$$$i`" ]; then \
+				cp -flr $(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$$$$i/* $(STAGING_DIR);\
+			fi; \
+		done; \
 		cd "$(STAGING_DIR)"; \
 		if [ -f packages/$(STAGING_FILES_LIST) ]; then \
 			cat packages/$(STAGING_FILES_LIST) | xargs -r rm -f 2>/dev/null; \
