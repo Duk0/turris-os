@@ -101,16 +101,17 @@ endif
 STAMP_CONFIGURED=$(PKG_BUILD_DIR)/.configured$(if $(DUMP),,_$(call confvar,$(PKG_CONFIG_DEPENDS)))
 STAMP_CONFIGURED_WILDCARD=$(patsubst %_$(call confvar,$(PKG_CONFIG_DEPENDS)),%_*,$(STAMP_CONFIGURED))
 STAMP_BUILT:=$(PKG_BUILD_DIR)/.built
+
+STAGING_DIR:=$(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$(PKG_DIR_NAME)
 STAMP_INSTALLED:=$(STAGING_DIR)/stamp/.$(PKG_NAME)$(if $(BUILD_VARIANT),.$(BUILD_VARIANT),)_installed
 
 STAGING_FILES_LIST:=$(PKG_NAME)$(if $(BUILD_VARIANT),.$(BUILD_VARIANT),).list
-STAGING_DIR:=$(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$(PKG_DIR_NAME)
 $(eval $(shell sed -n 's|.*$(PKG_DIR_NAME)/compile.*=|deps:=|p' $(TMP_DIR)/.packagedeps))
 deps:=$(shell for i in $(deps); do echo $$i | sed -n 's|/.*/\([^/]*\)/compile|\1|p' | grep -v '^host$$'; done)
 
 define CleanStaging
 	rm -f $(STAMP_INSTALLED)
-	@-(\
+	(\
 		mkdir -p "$(STAGING_DIR)"; \
 		[ -z "$(deps)" ] || for i in $(deps); do \
 			if [ -d "$(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$$$$i" ] && [ -n "`ls $(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$$$$i`" ]; then \
