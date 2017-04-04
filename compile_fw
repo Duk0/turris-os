@@ -58,6 +58,9 @@ $([ \! -f ./disabled_packages.$TARGET_BOARD ] || echo $(cut -d '#' -f1 ./disable
 
 # Override packages release numbers
 scripts/override_release_numbers.sh
+for i in `grep -Rl 'STAGING_DIR)/host' packages`; do
+	sed -i 's|STAGING_DIR)/host|STAGING_DIR_HOST)|g' "$i"
+done
 
 # Build NAND FW
 [ -z "$OPENWRT_BRANCH"  ] || PKG_BRANCH="-$OPENWRT_BRANCH"
