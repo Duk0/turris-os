@@ -62,7 +62,8 @@ for i in `grep -Rl 'STAGING_DIR)/host' packages`; do
 	sed -i 's|STAGING_DIR)/host|STAGING_DIR_HOST)|g' "$i"
 done
 for i in `grep -Rl '/\.\./host' tools`; do
-	sed -i 's|/\.\./host|/\.\./\.\./host|g' "$i"
+	sed -i 's|STAGING_DIR//\.\./host|STAGING_DIR_HOST|g' "$i"
+	sed -i 's|$ENV{.STAGING_DIR.}[[:blank:]]*?[[:blank:]]*$ENV{.STAGING_DIR.}[[:blank:]]*\.[[:blank:]]*'"'"'/\.\./host|$ENV{'"'"'STAGING_DIR_HOST'"'"'} \? $ENV{'"'"'STAGING_DIR_HOST'"'"'} . '"'"'|g' "$i"
 done
 
 # Build NAND FW
