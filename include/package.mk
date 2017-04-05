@@ -113,11 +113,11 @@ define CleanStaging
 		mkdir -p "$(STAGING_DIR)"; \
 		echo sed -n 's|.*$(PKG_DIR_NAME)/compile.*=||p' $(TMP_DIR)/.packagedeps; \
 		deps="`sed -n 's|.*$(PKG_DIR_NAME)/compile.*=||p' $(TMP_DIR)/.packagedeps`"; \
-		echo $$deps;\
+		echo $$$$deps;\
 		echo sed -n 's|.*/\([^/]*\)/compile$$$$|\1|p'; \
-		deps="`for i in $$deps; do echo $$i | sed -n 's|.*/\([^/]*\)/compile$$$$|\1|p' | grep -v host; done`"; \
-		echo $$deps;\
-		[ -z "$$deps" ] || for i in $$deps; do \
+		deps="`for i in $$$$deps; do echo $$$$i | sed -n 's|.*/\([^/]*\)/compile$$$$|\1|p' | grep -v host; done`"; \
+		echo $$$$deps;\
+		[ -z "$$$$deps" ] || for i in $$$$deps; do \
 			if [ -d "$(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$$i" ] && [ -n "`ls $(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$$i`" ]; then \
 				cp -flr $(TOPDIR)/staging_dir/$(TARGET_DIR_NAME)/$$i/* $(STAGING_DIR);\
 			fi; \
